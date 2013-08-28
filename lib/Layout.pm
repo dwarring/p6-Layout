@@ -7,9 +7,13 @@ class Layout {
     enum Flow is export(:flow) <forward reverse>;
 
     class Position {
-        has Id $.relto;
-        has Num $x;
-        has Num $y;
+        role Disposition {
+            has Bool $.floating;
+        }
+        class Pos is Num does Disposition {};
+
+        has Pos $.x;
+        has Pos $.y;
 
         constant left   is export(:align) = 0.0;
         constant right  is export(:align) = 1.0;
