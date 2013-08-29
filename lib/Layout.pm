@@ -5,23 +5,24 @@ class Layout {
     subset Id of Str is export(:id) where {/^\w+$/};
     enum Display is export(:display) <hidden visible>;
     enum Flow is export(:flow) <forward reverse>;
+    enum Position is export(:position) <relative absolute>;
 
-    class Position {
-        role Disposition {
-            has Bool $.floating;
+    constant left   is export(:align) = 0.0;
+    constant right  is export(:align) = 1.0;
+
+    constant bottom is export(:valign) = 0.0;
+    constant top    is export(:valign) = 1.0;
+
+    constant center is export(:align, :valign) = 0.5;
+
+    class Placement {
+        role Positioning {
+            has Position $.position;
         }
-        class Pos is Num does Disposition {};
+        class Pos is Num does Positioning {};
 
         has Pos $.x;
         has Pos $.y;
-
-        constant left   is export(:align) = 0.0;
-        constant right  is export(:align) = 1.0;
-
-        constant bottom is export(:valign) = 0.0;
-        constant top    is export(:valign) = 1.0;
-
-        constant center is export(:align, :valign) = 0.5;
 
         subset Frac of Num where {0.0 <= $_ <= 1.0};
 
@@ -85,13 +86,12 @@ class Layout {
         }
     }
 
-    class Item {
+    class Item is Placement {
 
         has Id $.id;
         has Num $.z-index;
         has Flow $.flow = forward;
         has Display $.display = visible;
-        has Position $.position;
 
         has $.content;
         has Id $.label-id;
