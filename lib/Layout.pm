@@ -16,15 +16,12 @@ class Layout {
     constant center is export(:align, :valign) = 0.5;
 
     class Placement {
-        role Positioning {
-            has Position $.position;
-        }
-        class Pos is Num does Positioning {};
 
-        has Pos $.x;
-        has Pos $.y;
+        has Position $.position = absolute;
+        has $!x;
+        has $!y;
 
-        subset Frac of Num where {0.0 <= $_ <= 1.0};
+        subset Frac of Real where {0.0 <= $_ <= 1.0};
 
         has Frac $.grab;
         has Frac $.vgrab;
@@ -34,25 +31,31 @@ class Layout {
         has $.width;
         has $.height;
 
-        has Num $.rotate;
-
-        method left {
-            $.x  -  $.align * $.width;
+        method right($x0?) {
+            $!x = ($.align - 1) * $.width + $x0
+                if $x0.defined;
+            $!x  +  (1 - $.align) * $.width;
         }
 
-        method right {
-            $.x  +  (1 - $.align) * $.width;
+        method left($x1?) {
+            $!x = $x1 + $.align * $.width
+                if $x1.defined;
+            $!x  -  $.align * $.width;
         }
 
-        method bottom {
-            $.y  -  $.valign * $.height;
+        method bottom($y0?) {
+           $!y = $y0 + $.valign * $.height
+               if $y0.defined;
+           $!y  -  $.valign * $.height;
         }
 
-        method top {
-            $.y  +  (1 - $.valign) * $.height;
+        method top($y1?) {
+            $!y = ($.valign - 1) * $.height  +  $y1
+                if $y1.defined;
+          $!y  +  (1 - $.valign) * $.height;
         }
 
-        submethod BUILD(:$align, :$valign, :$!width, :$!height, :$!x, :$!y) {
+        submethod BUILD(:$align, :$valign, :$!width, :$!height) {
 
             if $align.defined {
                 if $align.isa('Str') {
@@ -86,7 +89,7 @@ class Layout {
         }
     }
 
-    class Item is Placement {
+    class Item is Placement is export(:item) {
 
         has Id $.id;
         has Num $.z-index;
