@@ -52,43 +52,42 @@ class Layout {
         method top($y1?) {
             $!y = ($.y-origin - 1) * $.height  +  $y1
                 if $y1.defined;
-          $!y  +  (1 - $.y-origin) * $.height;
+            $!y  +  (1 - $.y-origin) * $.height;
         }
 
-        method align  {$!x-origin}
-        method valign {$!y-origin}
+        method align($align?) {
+            if $align.defined {
+                $!x-origin = (given $align {
+                    when $align.isa('Str')     { $align.Num }
+                    when m:i/^l(eft)?$/        { left }
+                    when m:i/^c(ent(er|re))?$/ { center }
+                    when m:i/^r(ight)?$/       { right }
+                    default { $align.Num }
+                });
+                CATCH {die "illegal value for align: " ~ $align};
+            }
+            $!x-origin;
+        }
+
+        method valign($valign?) {
+            if $valign.defined {
+                $!y-origin = (given $valign {
+                    when $valign.isa('Str')    { $valign.Num }
+                    when m:i/^b(ottom)?$/      { left }
+                    when m:i/^c(ent(er|re))?$/ { center }
+                    when m:i/^t(op)?$/         { top }
+                    default { $valign.Num }
+                });
+                CATCH {die "illegal value for valign: " ~ $valign};
+            }
+            $!y-origin;
+        }
 
         submethod BUILD(:$align, :$valign, :$!width, :$!height) {
 
-            if $align.defined {
-                if $align.isa('Str') {
-                    $!x-origin = (given $align {
-                        when m:i/^l(eft)?$/        { left }
-                        when m:i/^c(ent(er|re))?$/ { center }
-                        when m:i/^r(ight)?$/       { right }
-                        default { $align.Num }
-                    });
-                }
-                else {
-                    $!x-origin = $align.Num;
-                }
-                CATCH {die "illegal value for align: " ~ $align};
-            }
+            self.align($align) if $align.defined;
+            self.valign($valign) if $valign.defined;
 
-            if $valign.defined {
-                if $valign.isa('Str') {
-                    $!y-origin = (given $valign {
-                        when m:i/^b(ottom)?$/      { left }
-                        when m:i/^c(ent(er|re))?$/ { center }
-                        when m:i/^t(op)?$/         { top }
-                        default { $valign.Num }
-                    });
-                }
-                else {
-                    $!y-origin = $valign.Num;
-                }
-                CATCH {die "illegal value for valign: " ~ $valign};
-            }
         }
     }
 
