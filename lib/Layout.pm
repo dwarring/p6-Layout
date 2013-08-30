@@ -73,7 +73,7 @@ class Layout {
             if $valign.defined {
                 $!y-origin = (given $valign {
                     when $valign.isa('Str')    { $valign.Num }
-                    when m:i/^b(ottom)?$/      { left }
+                    when m:i/^b(ottom)?$/      { bottom }
                     when m:i/^c(ent(er|re))?$/ { center }
                     when m:i/^t(op)?$/         { top }
                     default { $valign.Num }
@@ -100,7 +100,7 @@ class Layout {
 
         has $.content;
         has Id $.label-id;
-        has $.label;
+        has $.label-content;
 
     }
 
