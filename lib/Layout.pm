@@ -25,41 +25,44 @@ class Layout {
 
         has Frac $.grab;
         has Frac $.vgrab;
-        has Frac $.align = left;
-        has Frac $.valign = bottom;
+        has Frac $.x-origin = left;
+        has Frac $.y-origin = bottom;
 
         has $.width;
         has $.height;
 
         method right($x0?) {
-            $!x = ($.align - 1) * $.width + $x0
+            $!x = ($.x-origin - 1) * $.width + $x0
                 if $x0.defined;
-            $!x  +  (1 - $.align) * $.width;
+            $!x  +  (1 - $.x-origin) * $.width;
         }
 
         method left($x1?) {
-            $!x = $x1 + $.align * $.width
+            $!x = $x1 + $.x-origin * $.width
                 if $x1.defined;
-            $!x  -  $.align * $.width;
+            $!x  -  $.x-origin * $.width;
         }
 
         method bottom($y0?) {
-           $!y = $y0 + $.valign * $.height
+           $!y = $y0 + $.y-origin * $.height
                if $y0.defined;
-           $!y  -  $.valign * $.height;
+           $!y  -  $.y-origin * $.height;
         }
 
         method top($y1?) {
-            $!y = ($.valign - 1) * $.height  +  $y1
+            $!y = ($.y-origin - 1) * $.height  +  $y1
                 if $y1.defined;
-          $!y  +  (1 - $.valign) * $.height;
+          $!y  +  (1 - $.y-origin) * $.height;
         }
+
+        method align  {$!x-origin}
+        method valign {$!y-origin}
 
         submethod BUILD(:$align, :$valign, :$!width, :$!height) {
 
             if $align.defined {
                 if $align.isa('Str') {
-                    $!align = (given $align {
+                    $!x-origin = (given $align {
                         when m:i/^l(eft)?$/        { left }
                         when m:i/^c(ent(er|re))?$/ { center }
                         when m:i/^r(ight)?$/       { right }
@@ -67,14 +70,14 @@ class Layout {
                     });
                 }
                 else {
-                    $!align = $align.Num;
+                    $!x-origin = $align.Num;
                 }
                 CATCH {die "illegal value for align: " ~ $align};
             }
 
             if $valign.defined {
                 if $valign.isa('Str') {
-                    $!valign = (given $valign {
+                    $!y-origin = (given $valign {
                         when m:i/^b(ottom)?$/      { left }
                         when m:i/^c(ent(er|re))?$/ { center }
                         when m:i/^t(op)?$/         { top }
@@ -82,7 +85,7 @@ class Layout {
                     });
                 }
                 else {
-                    $!valign = $valign.Num;
+                    $!y-origin = $valign.Num;
                 }
                 CATCH {die "illegal value for valign: " ~ $valign};
             }
