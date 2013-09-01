@@ -58,11 +58,11 @@ class Layout {
         method align($align?) {
             if $align.defined {
                 $!x-origin = (given $align {
-                    when $align.isa('Str')     { $align.Num }
                     when m:i/^l(eft)?$/        { left }
                     when m:i/^c(ent(er|re))?$/ { center }
                     when m:i/^r(ight)?$/       { right }
-                    default { $align.Num }
+
+                    .Num
                 });
                 CATCH {die "illegal value for align: " ~ $align};
             }
@@ -72,11 +72,11 @@ class Layout {
         method valign($valign?) {
             if $valign.defined {
                 $!y-origin = (given $valign {
-                    when $valign.isa('Str')    { $valign.Num }
                     when m:i/^b(ottom)?$/      { bottom }
                     when m:i/^c(ent(er|re))?$/ { center }
                     when m:i/^t(op)?$/         { top }
-                    default { $valign.Num }
+
+                    .Num
                 });
                 CATCH {die "illegal value for valign: " ~ $valign};
             }
